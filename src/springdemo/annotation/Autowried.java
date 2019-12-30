@@ -6,9 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface RequestMapper {
-	
+@Target(ElementType.FIELD)
+public @interface Autowried {
 	String value() default "";
-	
 }
