@@ -13,6 +13,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import springdemo.annotation.RequestMapper;
 import springdemo.controller.testcontroller;
 import springdemo.controller.usercontroller;
 
@@ -76,13 +77,14 @@ public class main {
 		//调用该类的所有方法
 		for (Method method : methods) {
 			try {
-				if (test != null) {
-					method.invoke(test);
+				if (method.getAnnotation(RequestMapper.class) != null) {
+					if (test != null) {
+						method.invoke(test);
+					}
+					if (user != null) {
+						method.invoke(user);
+					}
 				}
-				if (user != null) {
-					method.invoke(user);
-				}
-				
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
