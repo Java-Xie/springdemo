@@ -3,6 +3,7 @@ package spring.demo;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -11,18 +12,21 @@ import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import spring.demo.annotation.Controller;
 import spring.demo.annotation.RequestMapper;
-import spring.demo.controller.testcontroller;
-import spring.demo.controller.usercontroller;
+import spring.demo.annotation.Service;
+import spring.demo.controller.TestController;
+import spring.demo.controller.UserController;
+import spring.demo.service.UserService;
 
-public class main {
+public class Main {
 	
 	public static void main(String[] args) {
 		String packageName = "spring.demo";
 		Set<Class<?>> classes = new LinkedHashSet<>(64);
 		try {
 			String pkgDirName = packageName.replace('.', '/');
-			Enumeration<URL> urls = main.class.getClassLoader().getResources(pkgDirName);
+			Enumeration<URL> urls = Main.class.getClassLoader().getResources(pkgDirName);
 			while (urls.hasMoreElements()) {
 				URL url = (URL) urls.nextElement();
 //				String protocol = url.getProtocol();
@@ -34,36 +38,75 @@ public class main {
 			e.printStackTrace();
 		}
 		
-		for (Class<?> controllerClass : classes) {
-			registerClass(controllerClass);
+		System.out.println(classes.size());
+		
+		for (Class<?> csClass : classes) {
+			registerClass(csClass,classes);
 		}
 		
 	}
 	
 	//
-	private static void registerClass(Class<?> clazz) {
-		String className = clazz.getName();
+	private static void registerClass(Class<?> clazz,Set<Class<?>> classes) {
+		
+		Object obj = null;
+		try {
+			obj = clazz.newInstance();
+		} catch (InstantiationException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		} catch (IllegalAccessException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		
+		Field[] fields = clazz.getDeclaredFields();
+		for (Field field : fields) {
+			field.setAccessible(true);
+			System.out.println(field.getGenericType());
+			for (Class<?> csClass : classes) {
+				System.out.println(csClass);
+				if (csClass == field.getType()) {
+					try {
+						field.set(obj,csClass.newInstance());
+						System.out.println("注入成功:"+field);
+					} catch (IllegalArgumentException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+			try {
+				System.out.println(field.get(obj));
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+//			System.out.println(field.getType() == UserService.class);
+		}
+//		String className = clazz.getName();
 		Method[] methods = clazz.getMethods();
 		
-		testcontroller test = null;
+		TestController test = null;
 		
-		usercontroller user = null;
+		UserController user = null;
 		
-		try {
-			Object obj = clazz.newInstance();
-			if (obj instanceof testcontroller) {
-				test = (testcontroller) obj;
-			}
-			if (obj instanceof usercontroller) {
-				user = (usercontroller) obj;
-			}
-		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		if (obj instanceof TestController) {
+			test = (TestController) obj;
 		}
+		if (obj instanceof UserController) {
+			user = (UserController) obj;
+		}
+		
 		for (Method method : methods) {
 			try {
 				if (method.getAnnotation(RequestMapper.class) != null) {
@@ -110,11 +153,9 @@ public class main {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
-			if (clazz != null) {
-				if (clazz.getAnnotations()!=null) {
-					System.out.println(clazz.getName());
-					classes.add(clazz);
-				}
+			if (clazz != null && clazz.getAnnotation(Controller.class)!=null || clazz.getAnnotation(Service.class)!=null) {
+//				System.out.println(clazz.getName());
+				classes.add(clazz);
 			}
 		}
 	}

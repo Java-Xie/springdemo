@@ -3,9 +3,9 @@ package spring.demo.service;
 import spring.demo.annotation.Service;
 
 @Service
-public class testservice {
+public class TestService {
 	
-	public testservice () {
+	public TestService () {
 		System.out.println("加载了testservice类");
 	}
 	
