@@ -1,7 +1,9 @@
-package springdemo.controller;
+package spring.demo.controller;
 
-import springdemo.annotation.RequestMapper;
+import spring.demo.annotation.Controller;
+import spring.demo.annotation.RequestMapper;
 
+@Controller
 public class usercontroller {
 	
 	@RequestMapper("user")

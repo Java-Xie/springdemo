@@ -1,4 +1,4 @@
-package springdemo;
+package spring.demo;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -6,21 +6,19 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.logging.Logger;
 
-import springdemo.annotation.RequestMapper;
-import springdemo.controller.testcontroller;
-import springdemo.controller.usercontroller;
+import spring.demo.annotation.RequestMapper;
+import spring.demo.controller.testcontroller;
+import spring.demo.controller.usercontroller;
 
 public class main {
 	
 	public static void main(String[] args) {
-		String packageName = "springdemo.controller";
+		String packageName = "spring.demo";
 		Set<Class<?>> classes = new LinkedHashSet<>(64);
 		try {
 			String pkgDirName = packageName.replace('.', '/');
@@ -42,7 +40,6 @@ public class main {
 		
 	}
 	
-	//2��
 	//
 	private static void registerClass(Class<?> clazz) {
 		String className = clazz.getName();
@@ -101,7 +98,7 @@ public class main {
 		});
 		for (File file : listFiles) {
 			if (file.isDirectory()) {
-				findClassesByFile(pkgDirName+"/"+file.getName(),decode+"."+file.getName(),classes);
+				findClassesByFile(decode+"/"+file.getName(),pkgDirName+"."+file.getName(),classes);
 				continue;
 			}
 			String className = file.getName();
@@ -114,7 +111,10 @@ public class main {
 				e.printStackTrace();
 			}
 			if (clazz != null) {
-				classes.add(clazz);
+				if (clazz.getAnnotations()!=null) {
+					System.out.println(clazz.getName());
+					classes.add(clazz);
+				}
 			}
 		}
 	}
