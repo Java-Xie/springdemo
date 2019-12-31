@@ -6,11 +6,11 @@ public class usercontroller {
 	
 	@RequestMapper("user")
 	public void user() {
-		System.out.println("µ÷ÓÃÁËuser·½·¨");
+		System.out.println("è°ƒç”¨äº†useræ–¹æ³•");
 	}
 	
 	public usercontroller() {
-		System.out.println("¼ÓÔØÁËusercontrollerÀà");
+		System.out.println("åŠ è½½äº†usercontrollerç±»");
 	}
 
 }

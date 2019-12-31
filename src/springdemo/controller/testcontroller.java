@@ -6,11 +6,11 @@ public class testcontroller {
 	
 	@RequestMapper("test")
 	public void test() {
-		System.out.println("µ÷ÓÃÁËtest·½·¨");
+		System.out.println("è°ƒç”¨äº†testæ–¹æ³•");
 	}
 	
 	public testcontroller() {
-		System.out.println("¼ÓÔØÁËtestcontrollerÀà");
+		System.out.println("åŠ è½½äº†testcontrollerç±»");
 	}
 	
 }
