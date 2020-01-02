@@ -12,6 +12,7 @@ import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import spring.demo.annotation.Autowried;
 import spring.demo.annotation.Controller;
 import spring.demo.annotation.RequestMapper;
 import spring.demo.annotation.Service;
@@ -63,22 +64,23 @@ public class Main {
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field field : fields) {
 			field.setAccessible(true);
-			System.out.println(field.getGenericType());
 			for (Class<?> csClass : classes) {
-				System.out.println(csClass);
-				if (csClass == field.getType()) {
-					try {
-						field.set(obj,csClass.newInstance());
-						System.out.println("注入成功:"+field);
-					} catch (IllegalArgumentException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (InstantiationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+//				System.out.println(csClass);
+				if (field.getAnnotation(Autowried.class) != null) {
+					if (csClass == field.getType()) {
+						try {
+							field.set(obj,csClass.newInstance());
+							System.out.println("注入成功:"+field);
+						} catch (IllegalArgumentException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (IllegalAccessException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (InstantiationException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			}
